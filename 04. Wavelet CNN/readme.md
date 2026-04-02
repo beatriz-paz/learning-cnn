@@ -36,19 +36,29 @@ As seguintes métricas foram utilizadas para avaliar o desempenho dos modelos:
 
 Todos os modelos que utilizam wavelet foram implementados com **filtros treináveis (learnable)**.
 
-## Resultados
 
-| Modelo | Acc (%) ± σ | F1 ± σ | AUC ± σ |
-|------|------------|--------|--------|
-| A: Baseline (sem wavelet) | 91.88% ± 2.30 | 0.9176 ± 0.0231 | 0.9282 ± 0.0280 |
-| B: Wavelet Haar como Pooling | 91.25 ± 1.25 | 0.9110 ± 0.0134 | 0.9145 ± 0.0378 |
-| C: Wavelet Bior 1.3 como Pooling | 89.69 ± 2.12 | 0.8961 ± 0.0207 | 0.9225 ± 0.0245 |
-| D: Wavelet dB4 como Pooling | 91.88 ± 2.30 | 0.9176 ± 0.0232 | 0.9093 ± 0.0381 |
-| E: Wavelet Coiflet como Pooling | 92.50% ± 1.82 | 0.9235 ± 0.0189 | 0.9109 ± 0.0349 |
-| F: Wavelet Híbrida no Pipeline | 90.62% ± 1.98 | 0.9053 ± 0.0203 | 0.9228 ± 0.0262 |
-| G: Wavelet Dual-Branch | 93.75% ± 1.71 | 0.9360 ± 0.0179 | 0.9345 ± 0.0299 |
+## Resultados dos Experimentos — Comparação de Modelos
+
+
+| Modelo | Descrição | Acc (%) ± σ | F1 ± σ | AUC ± σ |
+|--------|-----------|:-----------:|:------:|:-------:|
+| A | Baseline — CNN sem wavelet (ROI) | 91.88 ± 2.30 | 0.9176 ± 0.0231 | 0.9282 ± 0.0280 |
+| B | CNN simples — sem ROI, sem wavelet | 55.31 ± 9.25 | 0.4991 ± 0.0823 | 0.4923 ± 0.0217 |
+| C | CNN apenas com CBAM — sem ROI | 51.25 ± 8.75 | 0.5073 ± 0.0773 | 0.4443 ± 0.0944 |
+| D | CNN apenas com ROI — sem wavelet | 90.94 ± 1.53 | 0.9074 ± 0.0156 | 0.9230 ± 0.0176 |
+| E | Wavelet Haar como pooling (ROI) | 91.25 ± 1.25 | 0.9110 ± 0.0134 | 0.9145 ± 0.0378 |
+| F | Wavelet Biorthogonal como pooling (ROI) | 89.69 ± 2.12 | 0.8961 ± 0.0207 | 0.9225 ± 0.0245 |
+| G | Wavelet Daubechies (dB4) como pooling (ROI) | 92.81 ± 0.77 | 0.9265 ± 0.0083 | 0.9129 ± 0.0321 |
+| H | Wavelet Coiflet como pooling (ROI) | 92.50 ± 1.82 | 0.9235 ± 0.0189 | 0.9109 ± 0.0349 |
+| I | Wavelet híbrida no pipeline (ROI) | 90.62 ± 1.98 | 0.9053 ± 0.0203 | 0.9228 ± 0.0262 |
+| **J** | **CNN Dual Branch com wavelet (ROI)** | **94.06 ± 1.53** | **0.9393 ± 0.0160** | **0.9363 ± 0.0365** |
+
+> **Nota:** Todos os experimentos utilizam validação cruzada estratificada de 5 folds.  
+> Resultados reportados como média ± desvio padrão (σ). Melhor resultado em **negrito**.  
+> ROI = Region of Interest; CBAM = Convolutional Block Attention Module.
 
 ---
+
 
 # Modelos Avaliados
 
