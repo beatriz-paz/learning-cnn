@@ -1,8 +1,15 @@
-# WaveletCNN para Classificação de Imagens Mamográficas
+# <p align="center">WaveletCNN para Classificação de Imagens Mamográficas</p>
 
 Este projeto investiga o uso de **transformadas wavelet integradas ao pipeline de CNNs** para melhorar a extração de características em imagens mamográficas.
 
 A proposta central é substituir operações tradicionais como **MaxPooling** por **decomposições wavelet**, explorando representações no domínio da frequência.
+
+<p align="center">
+<i>
+Validação Cruzada Estratificada — 5-Fold <br>
+10 Modelos Avaliados | Métricas: Acc, F1-Score, AUC-ROC
+</i>i>
+</p>
 
 ---
 
@@ -10,9 +17,11 @@ A proposta central é substituir operações tradicionais como **MaxPooling** po
 
 As seguintes métricas foram utilizadas para avaliar o desempenho dos modelos:
 
-| Métrica   | O que mede                                   | Quando usar                    |
+| Métrica   | O que mede                                   | Quando usar                  |
 |----------|----------------------------------------------|-------------------------------|
 | Acurácia | Proporção de acertos gerais                  | Dados balanceados             |
+| Precisão | Confiabilidade das predições positivas       | Evitar falsos positivos       |
+| Recall   | Capacidade de encontrar positivos reais      | Evitar falsos negativos       |
 | F1-score | Equilíbrio entre precisão e recall           | Dados desbalanceados          |
 | AUC-ROC  | Capacidade de separar as classes             | Avaliação global do modelo    |
 
@@ -34,86 +43,124 @@ As seguintes métricas foram utilizadas para avaliar o desempenho dos modelos:
 
 # Experimentos
 
-Todos os modelos que utilizam wavelet foram implementados com **filtros treináveis (learnable)**.
+Todos os modelos que utilizam wavelet foram implementados com **filtros treináveis**.
 
+Os experimentos investigam o impacto da incorporação de transformadas wavelet como mecanismo de pooling, bem como variações nas estratégias de detecção de região de interesse (ROI) e realce de características via mecanismo de atenção CBAM.
 
 ## Resultados dos Experimentos — Comparação de Modelos
 
-
 | Modelo | Descrição | Acc (%) ± σ | F1 ± σ | AUC ± σ |
 |--------|-----------|:-----------:|:------:|:-------:|
-| A | Baseline — CNN sem wavelet (ROI) | 91.88 ± 2.30 | 0.9176 ± 0.0231 | 0.9282 ± 0.0280 |
-| B | CNN simples — sem ROI, sem wavelet | 55.31 ± 9.25 | 0.4991 ± 0.0823 | 0.4923 ± 0.0217 |
-| C | CNN apenas com CBAM — sem ROI | 51.25 ± 8.75 | 0.5073 ± 0.0773 | 0.4443 ± 0.0944 |
-| D | CNN apenas com ROI — sem wavelet | 90.94 ± 1.53 | 0.9074 ± 0.0156 | 0.9230 ± 0.0176 |
-| E | Wavelet Haar como pooling (ROI) | 91.25 ± 1.25 | 0.9110 ± 0.0134 | 0.9145 ± 0.0378 |
-| F | Wavelet Biorthogonal como pooling (ROI) | 89.69 ± 2.12 | 0.8961 ± 0.0207 | 0.9225 ± 0.0245 |
-| G | Wavelet Daubechies (dB4) como pooling (ROI) | 92.81 ± 0.77 | 0.9265 ± 0.0083 | 0.9129 ± 0.0321 |
-| H | Wavelet Coiflet como pooling (ROI) | 92.50 ± 1.82 | 0.9235 ± 0.0189 | 0.9109 ± 0.0349 |
-| I | Wavelet híbrida no pipeline (ROI) | 90.62 ± 1.98 | 0.9053 ± 0.0203 | 0.9228 ± 0.0262 |
-| **J** | **CNN Dual Branch com wavelet (ROI)** | **94.06 ± 1.53** | **0.9393 ± 0.0160** | **0.9363 ± 0.0365** |
+| A | CNN Baseline simples | 55.31 ± 9.25 | 0.4991 ± 0.0823 | 0.4923 ± 0.0217 |
+| B | CNN Baseline apenas com CBAM | 51.25 ± 8.75 | 0.5073 ± 0.0773 | 0.4443 ± 0.0944 |
+| C | CNN Baseline apenas com ROI | 90.94 ± 1.53 | 0.9074 ± 0.0156 | 0.9230 ± 0.0176 |
+| D | CNN Baseline com ROI + CBAM | 91.88 ± 2.30 | 0.9176 ± 0.0231 | 0.9282 ± 0.0280 |
+| E | Wavelet Haar como Pooling | 91.25 ± 1.25 | 0.9110 ± 0.0134 | 0.9145 ± 0.0378 |
+| F | Wavelet Biorthogonal 1.3 como Pooling | 89.69 ± 2.12 | 0.8961 ± 0.0207 | 0.9225 ± 0.0245 |
+| G | Wavelet Daubechies (db4) como Pooling | 92.81 ± 0.77 | 0.9265 ± 0.0083 | 0.9129 ± 0.0321 |
+| H | Wavelet Coiflet como Pooling | 92.50 ± 1.82 | 0.9235 ± 0.0189 | 0.9109 ± 0.0349 |
+| I | Wavelet Híbrida (haar, db4, bior, coiflet) como Pooling | 90.62 ± 1.98 | 0.9053 ± 0.0203 | 0.9228 ± 0.0262 |
+| **J** | **CNN Dual Branch — ResNet + Wavelet Coiflet** | **94.06 ± 1.53** | **0.9393 ± 0.0160** | **0.9363 ± 0.0365** |
 
-> **Nota:** Todos os experimentos utilizam validação cruzada estratificada de 5 folds.  
-> Resultados reportados como média ± desvio padrão (σ). Melhor resultado em **negrito**.  
-> ROI = Region of Interest; CBAM = Convolutional Block Attention Module.
+> **Observações:**
+> - Validação cruzada estratificada (5-Fold)
+> - Resultados apresentados como média ± desvio padrão (σ)
+> - Melhor modelo destacado em **negrito**
+> - ROI: Region of Interest
+> - CBAM: Convolutional Block Attention Module
 
 ---
 
 
 # Modelos Avaliados
 
-### 🔹 A — Baseline
+Os modelos estão organizados em três grupos conforme abaixo:
+
+- Grupo I — Baselines: modelos sem wavelet, com variações de ROI e CBAM.
+- Grupo II — Wavelet como Pooling: substituição do pooling tradicional por wavelets (ROI + CBAM).
+- Grupo III — Modelos Avançados: arquiteturas mais complexas com wavelet híbrida ou dual branch.
+
+## Grupo I — Modelos Baseline (sem Wavelet)
+
+Os modelos baseline servem como referência comparativa. Avaliam o impacto isolado de ROI e CBAM sem a incorporação de wavelets.
+
+### Modelo A: CNN Baseline simples
 - CNN tradicional sem uso de wavelets.
 
 **Resultado:**
-Apresenta desempenho consistente e competitivo, estabelecendo um forte baseline para comparação com abordagens baseadas em wavelets.
----
+Apresenta um baixo desempenho, comparada com outros modelos. Por mais que seja simples, a falta de técnicas para tratar apenas as partes importantes da imagem geram impactos na avaliação do modelo.
 
-### 🔹 B — Wavelet Haar
-- Substitui pooling por decomposição Haar  
-- Foco em bordas e descontinuidades  
 
-**Resultado:**
-Leve degradação em todas as métricas em relação ao baseline, sugerindo que a simplicidade da Haar pode limitar a representação de padrões mais complexos.
----
-
-### 🔹 C — Wavelet Biorthogonal (1.3)
-- Propriedade de simetria e melhor preservação estrutural
-- Adequada para reconstrução de sinais
+### Modelo B: CNN Baseline apenas com CBAM
+- CNN apenas com técnica CBAM de realce.
 
 **Resultado:**
-Apesar de apresentar menor acurácia e F1-score, obteve AUC elevada, indicando boa capacidade de separação entre classes, mesmo com limiar de decisão fixo subótimo.
----
+O uso isolado do CBAM sem ROI também falha em superar o acaso. O alto desvio padrão (σ = 8.75) indica instabilidade entre os folds, sugerindo que o mecanismo de atenção depende de uma região de entrada mais focada para ser efetivo.
 
-### 🔹 D — Wavelet Daubechies (db4)
-- Captura eficiente de padrões locais e texturas
-- Maior suporte e complexidade em relação à Haar
 
-**Resultado:**
-Desempenho equivalente ao baseline em acurácia e F1, porém com leve queda em AUC, indicando que a melhoria na representação local nem sempre se traduz em melhor separabilidade global.
----
-
-### 🔹 E — Wavelet Coiflet
-- Equilíbrio entre localização temporal e frequência
-- Boa capacidade de representação multi-escala
+### Modelo C: CNN Baseline apenas com ROI
+- Modelo CNN apenas com ROI.
 
 **Resultado:**
-Melhor desempenho entre os modelos de única wavelet, superando o baseline em acurácia e F1-score, demonstrando maior eficiência na extração de características relevantes.
----
-### 🔹 F — Wavelet Híbrida no Pipeline
-- Combinação de múltiplas wavelets ao longo da rede  
-- Objetivo: capturar diferentes tipos de informação (borda, textura, estrutura)
+A aplicação do ROI na imagem gera um resultado expressivo, pois evidência que a CNN consegue ser melhor utilizada quando recebe para seu treino apenas parte de interesse da imagem mamogŕafica.
+
+
+### Modelo D: CNN Baseline com ROI + CBAM
+- Modelo de CNN que combina as duas técnicas, de foco (ROI) e realce (CBAM).
 
 **Resultado:**
-Não apresentou ganhos significativos, sugerindo possível redundância de informações ou dificuldade de otimização do modelo devido ao aumento da complexidade.
+A combinação de ROI e CBAM estabelece o **baseline principal do trabalho**. Apresenta a maior AUC entre os modelos sem wavelet (0.9282), servindo como referência para avaliar o ganho das arquiteturas com wavelet.
+
 ---
 
-### 🔹 G — Wavelet Dual-Branch
-- Arquitetura com dois ramos paralelos
-- Integra múltiplas representações no processo de fusão de features
+## Grupo II — Wavelet como Pooling (ROI + CBAM)
+
+Todos os modelos deste grupo substituem o pooling tradicional por uma transformada wavelet, mantendo ROI e CBAM. O objetivo é identificar qual família wavelet oferece maior ganho de representação.
+
+### Modelo E: Wavelet Haar como Pooling
+- Haar: Rápida, quadrada, para bordas secas.
 
 **Resultado:**
-Melhor desempenho geral em todas as métricas (Acc, F1 e AUC), evidenciando que a combinação explícita de diferentes representações melhora significativamente a capacidade discriminativa do modelo.
+A wavelet Haar apresenta desempenho ligeiramente inferior ao baseline (Modelo D) em acurácia, porém com menor desvio padrão (σ = 1.25), indicando maior estabilidade. A AUC relativamente baixa (0.9145) sugere limitação da Haar para capturar variações finas de textura.
+
+
+### Modelo F: Wavelet Biorthogonal 1.3 como Pooling
+- Biorthogonal: Simétrica, perfeita para reconstrução de imagens.
+
+**Resultado:**
+A Biorthogonal 1.3 apresenta a menor acurácia entre os modelos com wavelet como pooling (89.69%). Contudo, sua AUC (0.9225) é comparável ao baseline, o que pode indicar boa discriminabilidade em detrimento de precisão ponto-a-ponto.
+
+
+### Modelo G: Wavelet Daubechies db4 como Pooling
+- Daubechies: Versátil, assimétrica, padrão da indústria.
+  
+**Resultado:**
+A Daubechies db4 apresenta o menor desvio padrão de acurácia entre todos os modelos (σ = 0.77), indicando alta estabilidade. Com acurácia de 92.81% e F1 de 0.9265, supera o baseline em acurácia, sendo a família wavelet mais consistente como pooling isolado.
+
+### Modelo H: Wavelet Coiflet como Pooling
+- Coiflets: Mais simétricas que as dbN, focadas em precisão de aproximação.
+
+**Resultado:**
+A Coiflet apresenta desempenho próximo à Daubechies db4, com acurácia de 92.50% e F1 de 0.9235. O maior desvio padrão em relação à db4 indica menor estabilidade entre folds, mas ainda superior ao baseline.
+
+---
+
+## Grupo III — Modelos Avançados
+
+Os modelos avançados exploram estratégias mais sofisticadas de integração wavelet, incluindo pipeline híbrido com múltiplas famílias e arquitetura dual branch com processamento paralelo.
+
+### Modelo I: Wavelet Híbrida no Pipeline (Haar + db4 + Bior + Coiflet)
+- Modelo que aplica diferentes wavelets no lugar do Max Pooling tradicial.
+
+**Resultado:**
+A combinação de múltiplas wavelets no pipeline não supera os melhores modelos individuais (G e H) em acurácia, sugerindo que a diversidade de famílias introduz ruído ao invés de complementaridade quando usadas sequencialmente. A AUC (0.9228) é, contudo, competitiva.
+
+### Modelo J: CNN Dual Branch — ResNet + Wavelet Coiflet (ROI + CBAM)
+- CNN dual branch, sendo um ramo aplicando transfer learning (ResNet) e o outro usando o modelo que já havíamos testado.
+
+**Resultado:**
+**O modelo Dual Branch é o melhor desempenho geral do estudo, com 94.06% de acurácia, F1 de 0.9393 e AUC de 0.9363. O processamento paralelo entre o branch ResNet e o branch Wavelet Coiflet permite capturar tanto características profundas quanto informações de frequência local, resultando em um modelo que se completa de maneira efetiva entre as duas representações.**
+
 ---
 
 # Principais Constatações
