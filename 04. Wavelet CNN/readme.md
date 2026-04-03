@@ -165,31 +165,32 @@ A combinação de múltiplas wavelets no pipeline não supera os melhores modelo
 
 # Principais Constatações
 
-- A integração de wavelets permite incorporar informações no domínio da frequência, enriquecendo a representação aprendida pela CNN
-- Diferentes famílias de wavelets capturam características complementares (bordas, texturas, estruturas globais)
-- Modelos com uma única wavelet apresentam ganhos limitados e dependem fortemente da escolha da base
-- A utilização de múltiplas representações (Dual-Branch) mostrou-se mais eficaz do que simplesmente empilhar wavelets no pipeline
-- O aumento da complexidade (ex: modelo híbrido) pode introduzir:
-  - redundância de features
-  - dificuldade de convergência
-- Tornar os filtros wavelet treináveis aumenta a adaptabilidade, permitindo especialização ao domínio das imagens mamográficas
-- Sem o ROI o modelo não consegue alcançar acurácias acima de 70%
+**1. O ROI é o fator mais determinante:** ao comparar a baseline mais simples com outra aplicando a mais o ROI na imagem já tem-se uma salto de eficiência, o que evidencia que restringir a entrada da rede neural à região mamográfica de interesse é condição fundamental para o aprendizado efetivo de características relevantes.
+
+**2. O CBAM isolado não contribui:** agora se aplicar apenas a técnica de realce CBAM em uma imagem mamográfica inteira causa confusão e o modelo fica com baixo desempenho. Já ao ser combinado com ROI (Modelo D), houve ganho consistente em todas as métricas. Isso indica que o mecanismo de atenção só opera de forma significativa quando a entrada já está focada na região relevante.
+
+**3. Wavelets como pooling superam o Max Pooling tradicional:** verificado que dependendo o a Wavelet mãe escolhida para substituição do tradicional Max Pooling pode sim melhorar o modelo de CNN. Os modelos que usam Daubechies db4 e Coiflet superaram o baseline com ROI + CBAM (Modelo D: 91.88%) em acurácia e F1. A substituição do pooling tradicional por transformadas wavelet com filtros treináveis se mostrou uma estratégia válida para preservar informações de frequência local que o Max Pooling pode descartar.
+
+**4. A Daubechies db4 é a família wavelet mais estável como pooling isolado:** O Modelo G apresentou o menor desvio padrão de acurácia de todo o estudo (σ = 0.77) e acurácia de 92.81%, confirmando a eficiência da família Daubechies como referência na análise de sinais e imagens. A Coiflet (Modelo H) ficou próxima, mas com maior inconstância entre folds.
+
+**5. A combinação sequencial de múltiplas wavelets não traz ganho adicional:** O Modelo I (wavelet híbrida com quatro famílias em pipeline) não superou os melhores modelos individuais, sugerindo que a diversidade sequencial de famílias introduz ruído em vez de correlação. A variedades de filtros, nesse caso, não se traduziu em maior capacidade classificatória.
+
+**6. A arquitetura Dual Branch é o modelo mais eficaz:** O Modelo J foi o melhor de todos, atingindo a maior precisão nos testes com 94,06% de acurácia. O grande diferencial foi usar dois caminhos que trabalham ao mesmo tempo, em vez de um após o outro. De um lado, a rede ResNet identifica formas e objetos complexos. Por outro lado, a Wavelet Coiflet foca nos detalhes de textura e padrões de frequência. Ao juntar essas duas visões diferentes no final, o modelo consegue entender a imagem de forma muito mais completa e equilibrada, tornando-se mais eficiente e confiável do que as outras versões.
 
 ---
 
 # Conclusão
 
-Os resultados demonstram que a integração de transformadas wavelet em CNNs é uma abordagem promissora para análise de imagens médicas.
+Os estudos mostraram que usar as Wavelets (uma técnica que analisa detalhes de frequência) ajuda muito a classificar imagens de mamografia, especialmente quando focamos apenas na área importante do exame. Simplesmente trocar o método comum de reduzir a imagem pelo uso de Wavelets já traz resultados melhores, pois essa técnica não descarta detalhes importantes de textura que outros métodos perder.
 
-Em particular:
+Porém, o grande destaque foi o Modelo J, que usa dois caminhos trabalhando juntos:
 
-- A utilização de representações no domínio da frequência contribui para uma melhor discriminação entre classes
-- Arquiteturas que exploram múltiplas visões dos dados (como o modelo Dual-Branch) apresentam ganhos consistentes
-- Nem toda adição de complexidade resulta em melhoria, sendo essencial equilibrar:
-capacidade representacional
-estabilidade de treinamento
+- Um caminho usa uma inteligência já treinada (ResNet) para identificar formas gerais.
+- O outro caminho usa as Wavelets para focar especificamente nos padrões de frequência e detalhes minuciosos.
 
-De forma geral, o estudo evidencia que wavelets são mais eficazes quando utilizadas de maneira estrutural (multi-branch) do que apenas como substitutas diretas de operações como pooling.
+Em vez de um caminho vir depois do outro, eles trabalham lado a lado. Isso provou que esses dois tipos de informação se completam. O Modelo J não foi apenas o mais preciso, mas também o mais equilibrado e confiável em todos os testes, mostrando que não foi sorte.
+
+Em resumo, o que gerou melhores resultados na classificação de imagens mamograficas foi: focar na região correta do exame (ROI), usar mecanismos de atenção (CBAM) e combinar a força das redes neurais modernas (ResNet) com a precisão dos detalhes das Wavelets em caminhos paralelos.
 
 ---
 
