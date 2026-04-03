@@ -194,3 +194,22 @@ Em resumo, o que gerou melhores resultados na classificação de imagens mamogra
 
 ---
 
+## Ambiente de Desenvolvimento
+
+Os experimentos deste projeto foram executados em um notebook **Acer Nitro V 15**, com as seguintes especificações técnicas:
+
+| Componente | Detalhes |
+| :--- | :--- |
+| **Processador (CPU)** | AMD Ryzen 7 7735HS (8 Cores / 16 Threads) |
+| **Memória RAM** | 16 GB DDR5 4800 MT/s |
+| **Placa de Vídeo (Dedicada)** | NVIDIA GeForce RTX 4050 Mobile (6GB VRAM) |
+| **Placa de Vídeo (Integrada)** | AMD Radeon 680M |
+| **Sistema Operacional** | Ubuntu 24.04.4 LTS |
+| **Kernel** | Linux 6.17.0 |
+
+### Stack Tecnológica
+- **Linguagem:** Python
+- **Drivers GPU:** NVIDIA Driver 535.288
+- **Ambiente:** Linux (x86_64)
+
+---
